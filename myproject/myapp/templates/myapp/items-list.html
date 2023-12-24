@@ -1,0 +1,29 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}
+  Items list
+{% endblock %}
+
+{% block body %}
+  <h1>Items:</h1>
+  {% if items %}
+    <div>
+    {% for item in items %}
+      <div>
+        <p>Название: {{ item.name }}</a></p>
+        <p>Цена: {{ item.price }} {{ item.currency }}</p>
+        <p>Описание: {{ item.description }}</p>
+        <p><a href="{% url 'item' pk=item.pk %}">Добавить в корзину</a></p>
+
+        <p></p>
+      </div>
+    {% endfor %}
+
+    </div>
+
+  {% else %}
+    <h3>No items yet</h3>
+  {% endif %}
+
+
+{% endblock %}
