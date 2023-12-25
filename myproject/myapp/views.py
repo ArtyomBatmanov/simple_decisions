@@ -1,28 +1,29 @@
 import stripe
 from django.conf import settings
 from django.http import JsonResponse
+from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, CreateView, ListView
 from django.views.generic.detail import DetailView
 from .models import Item, Order
 from django.shortcuts import get_object_or_404, render
 from django.db.models import Sum
 from decimal import Decimal
 
-
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
-class SuccessView(TemplateView):
+class PaymentSuccessView(TemplateView):
     template_name = "myapp/payment_successful.html"
 
 
-class CancelView(TemplateView):
+class PaymentErrorView(TemplateView):
     template_name = "myapp/payment_error.html"
 
 
 class ItemPageView(TemplateView):
     template_name = "myapp/item.html"
+
     def get_context_data(self, **kwargs):
         pk = self.kwargs.get("pk")
         product = Item.objects.get(pk=pk)
@@ -46,6 +47,10 @@ class ItemsListView(TemplateView):
         return context
 
 
+class OrdersListView(ListView):
+    template_name = "myapp/orders_list.html"
+    context_object_name = 'orders'
+    queryset = Order.objects.all()
 
 
 class BuyItemView(View):
@@ -79,10 +84,6 @@ class BuyItemView(View):
         })
 
 
-
-
-
-
 class OrderDetailView(DetailView):
     model = Order
     template_name = 'myapp/order.html'
@@ -91,16 +92,16 @@ class OrderDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        order = self.object
-        total_price = order.items.aggregate(sum_price=Sum('price'))['sum_price'] or Decimal('0.00')
-        total_price += order.taxes.aggregate(sum_tax=Sum('amount'))['sum_tax'] or Decimal('0.00')
-        total_price -= order.discounts.aggregate(sum_discount=Sum('amount'))['sum_discount'] or Decimal('0.00')
-
-        # Применяем скидку и налог в процентах
-        total_price *= (1 + order.tax / 100)
-        total_price *= (1 - order.discount / 100)
-
-        context['total_price'] = total_price
+        # order = self.object
+        # total_price = order.items.aggregate(sum_price=Sum('price'))['sum_price'] or Decimal('0.00')
+        # total_price += order.taxes.aggregate(sum_tax=Sum('amount'))['sum_tax'] or Decimal('0.00')
+        # total_price -= order.discounts.aggregate(sum_discount=Sum('amount'))['sum_discount'] or Decimal('0.00')
+        #
+        # # Применяем скидку и налог в процентах
+        # total_price *= (1 + order.tax / 100)
+        # total_price *= (1 - order.discount / 100)
+        #
+        # context['total_price'] = total_price
 
         pk = self.kwargs.get("pk")
         order = Order.objects.get(pk=pk)
@@ -111,12 +112,6 @@ class OrderDetailView(DetailView):
         })
 
         return context
-
-
-
-
-
-
 
 
 class OrderPaymentView(View):
@@ -149,3 +144,9 @@ class OrderPaymentView(View):
 
         # Возвращаем ID платежной сессии
         return JsonResponse({'session_id': session.id})
+
+
+
+
+
+

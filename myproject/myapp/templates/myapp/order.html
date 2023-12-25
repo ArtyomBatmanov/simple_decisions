@@ -8,14 +8,14 @@
 <body>
     <h1>Детали заказа</h1>
     <p>ID заказа: {{ order.id }}</p>
-    <p>Итоговая сумма с учётом скидки и налога: {{ order.total_price }} {{ order.currency }}</p>
-    <p>Налог: {{ order.taxes.first.amount }} % </p>
-    <p>Скидка: {{ order.discounts.first.amount }} % </p>
+    <p>Налог: {{ order.tax }} % </p>
+    <p>Скидка: {{ order.discount }} % </p>
     <p>Товары:</p>
     <ul>
         {% for item in order.items.all %}
             <li>{{ item.name }} - {{ item.price }} {{ item.currency }}</li>
         {% endfor %}
+    <p>Итоговая сумма с учётом скидки и налога будет рассчитана на странице оплаты</p>
     </ul>
 
     <button id="payButton">Оплатить сейчас</button>

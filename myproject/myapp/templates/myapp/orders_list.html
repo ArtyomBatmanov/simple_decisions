@@ -1,0 +1,32 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}
+  Orders list
+{% endblock %}
+
+{% block body %}
+  <h1>Заказы:</h1>
+  {% if object_list %}
+    <div>
+      {% for order in orders %}
+        <div>
+          <p><a href="{% url 'order-detail' pk=order.pk %}"
+          >Details #{{ order.pk }}</a></p>
+          <div>
+            Items in order:
+            <ul>
+              {% for item in order.items.all %}
+                <li>{{ item.name }} {{ item.price }} {{ item.currency }} </li>
+              {% endfor %}
+
+            </ul>
+          </div>
+
+        </div>
+      {% endfor %}
+
+    </div>
+  {% else %}
+    <h3>No orders yet</h3>
+  {% endif %}
+{% endblock %}

@@ -9,6 +9,12 @@
   </title>
 </head>
 <body>
+<div id="buttons-container">
+  <a href="{% url 'orders-list' %}">Список заказов</a>
+  <a href="{% url 'home-page' %}">Список продуктов</a>
+
+  <!-- Добавьте дополнительные кнопки по мере необходимости -->
+</div>
 
 {% block body %}
   Base body
