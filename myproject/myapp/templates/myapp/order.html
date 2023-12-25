@@ -3,23 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Details</title>
+    <title>Детали заказа</title>
 </head>
 <body>
-    <h1>Order Details</h1>
-    <p>Order ID: {{ order.id }}</p>
-    <p>Currency: {{ order.currency }}</p>
-    <p>Total Price: {{ total_price }}</p>
-    <p>Tax: {{ order.taxes.first.amount }} % </p>
-    <p>Discount: {{ order.discounts.first.amount }} % </p>
-    <p>Items:</p>
+    <h1>Детали заказа</h1>
+    <p>ID заказа: {{ order.id }}</p>
+    <p>Итоговая сумма с учётом скидки и налога: {{ order.total_price }} {{ order.currency }}</p>
+    <p>Налог: {{ order.taxes.first.amount }} % </p>
+    <p>Скидка: {{ order.discounts.first.amount }} % </p>
+    <p>Товары:</p>
     <ul>
         {% for item in order.items.all %}
             <li>{{ item.name }} - {{ item.price }} {{ item.currency }}</li>
         {% endfor %}
     </ul>
 
-    <button id="payButton">Pay Now</button>
+    <button id="payButton">Оплатить сейчас</button>
 
     <script src="https://js.stripe.com/v3/"></script>
     <script>

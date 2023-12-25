@@ -88,39 +88,17 @@ class OrderDetailView(DetailView):
     template_name = 'myapp/order.html'
     context_object_name = 'order'
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #
-    #     # Вычисление общей стоимости заказа
-    #     order = self.object
-    #     total_price = order.items.aggregate(sum_price=Sum('price'))['sum_price'] or Decimal('0.00')
-    #
-    #     context['total_price'] = total_price
-    #     # total_price += order.taxes.first().amount
-    #     # total_price -= order.discounts.first().amount
-    #
-    #     pk = self.kwargs.get("pk")
-    #     order = Order.objects.get(pk=pk)
-    #     context = super(OrderDetailView, self).get_context_data(**kwargs)
-    #     context.update({
-    #         "order": order,
-    #         "STRIPE_PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY
-    #     })
-    #
-    #     context['total_price'] = total_price
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Вычисление общей стоимости заказа
         order = self.object
         total_price = order.items.aggregate(sum_price=Sum('price'))['sum_price'] or Decimal('0.00')
-
-        # Добавление суммы налога к общей стоимости
         total_price += order.taxes.aggregate(sum_tax=Sum('amount'))['sum_tax'] or Decimal('0.00')
-
-        # Вычитание суммы скидки из общей стоимости
         total_price -= order.discounts.aggregate(sum_discount=Sum('amount'))['sum_discount'] or Decimal('0.00')
+
+        # Применяем скидку и налог в процентах
+        total_price *= (1 + order.tax / 100)
+        total_price *= (1 - order.discount / 100)
 
         context['total_price'] = total_price
 
