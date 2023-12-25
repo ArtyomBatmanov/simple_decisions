@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+</head>
+<body>
+    <h1>Order Details</h1>
+    <p>Order ID: {{ order.id }}</p>
+    <p>Currency: {{ order.currency }}</p>
+    <p>Total Price: {{ total_price }}</p>
+    <p>Tax: {{ order.taxes.first.amount }} % </p>
+    <p>Discount: {{ order.discounts.first.amount }} % </p>
+    <p>Items:</p>
+    <ul>
+        {% for item in order.items.all %}
+            <li>{{ item.name }} - {{ item.price }} {{ item.currency }}</li>
+        {% endfor %}
+    </ul>
+
+    <button id="payButton">Pay Now</button>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        let stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");
+
+        document.getElementById('payButton').addEventListener('click', function() {
+            // Отправляем запрос на создание платежной сессии
+            fetch('/myapp/payment/{{ order.id }}/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                // body: JSON.stringify({})  # если нужно отправить какие-то данные вместе с запросом
+            })
+                .then(response => response.json())
+                .then(session => {
+                    // Инициируем процесс оплаты через Stripe Checkout
+                    return stripe.redirectToCheckout({ sessionId: session.session_id });
+                })
+                .then(result => {
+                    if (result.error) {
+                        // Обработка ошибки, например, вывод на экран сообщения об ошибке
+                        alert(result.error.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+</html>
