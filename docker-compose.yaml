@@ -5,13 +5,9 @@ services:
     build:
       dockerfile: ./Dockerfile
     command:
-      - sh
-      - -c
-      - |
-        python manage.py makemigrations &&
-        python manage.py migrate &&
-        python manage.py loaddata fixtures.json &&
-        python manage.py runserver 0.0.0.0:8080
-
+      - 'python'
+      - 'manage.py'
+      - 'runserver'
+      - '0.0.0.0:8080'
     ports:
-      - "8000:8080"
+      - '8000:8080'
