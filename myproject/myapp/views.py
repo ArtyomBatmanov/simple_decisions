@@ -33,6 +33,25 @@ class ItemPageView(DetailView):
         return context
 
 
+class OrderDetailView(DetailView):
+    model = Order
+    template_name = 'myapp/order.html'
+    context_object_name = 'order'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        pk = self.kwargs.get("pk")
+        order = Order.objects.get(pk=pk)
+        context = super(OrderDetailView, self).get_context_data(**kwargs)
+        context.update({
+            "order": order,
+            "STRIPE_PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY
+        })
+
+        return context
+
+
 class ItemsListView(ListView):
     template_name = "myapp/items-list.html"
     context_object_name = 'items'
@@ -78,23 +97,6 @@ class BuyItemView(View):
         })
 
 
-class OrderDetailView(DetailView):
-    model = Order
-    template_name = 'myapp/order.html'
-    context_object_name = 'order'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        pk = self.kwargs.get("pk")
-        order = Order.objects.get(pk=pk)
-        context = super(OrderDetailView, self).get_context_data(**kwargs)
-        context.update({
-            "order": order,
-            "STRIPE_PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY
-        })
-
-        return context
 
 
 class OrderPaymentView(View):
