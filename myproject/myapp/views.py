@@ -38,13 +38,7 @@ class ItemsListView(ListView):
     context_object_name = 'items'
     queryset = Item.objects.all()
 
-    # def get_context_data(self, **kwargs):
-    #     products = Item.objects.all()
-    #     context = super(ItemsListView, self).get_context_data(**kwargs)
-    #     context.update({
-    #         "items": products,
-    #     })
-    #     return context
+
 
 
 class OrdersListView(ListView):
