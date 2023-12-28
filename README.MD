@@ -6,7 +6,7 @@
  - В корне проекта выполните команды [python manage.py makemigrations], [python manage.py migrate], [python manage.py loaddata fixtures.json]
  - Выполните команду: sudo docker compose build app
  - Затем команду: sudo docker compose up app
- - Запуститься сервер: http://0.0.0.0:8080/ перейдите на http://0.0.0.0:8000/
+ - Запуститься сервер: http://0.0.0.0:8080/ перейдите на http://127.0.0.1:8000/
  - Для того чтобы проверить возможность оплаты можете воспользоваться тестовыми банковскими картами https://stripe.com/docs/testing#cards
     Админ: 
         логин: admin

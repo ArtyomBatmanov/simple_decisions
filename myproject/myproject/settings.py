@@ -25,6 +25,9 @@ SECRET_KEY = "django-insecure-db_99b8-ay2f$l*5ff*t89g75%d%&x$efhizeddkg(7_mb2ax0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
+
+
 ALLOWED_HOSTS = [
     "0.0.0.0",
     "127.0.0.1",
@@ -33,6 +36,14 @@ ALLOWED_HOSTS = [
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+if DEBUG:
+    import socket
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS.append('10.0.2.2')
+    INTERNAL_IPS.extend(
+        [ip[: ip.rfind('.')] + '.1' for ip in ips]
+    )
 
 # Application definition
 
@@ -128,5 +139,5 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-STRIPE_PUBLIC_KEY = 'Вставьте сюда Publishable key'
-STRIPE_SECRET_KEY = 'Вставьте сюда Secret key'
+STRIPE_PUBLIC_KEY = 'pk_test_51ORjCTEI8s8RsZYp8IEfxO29qrpaC87QnCwTunvYoduKSOKz7GU8Tc6SybpAsbsuShEmVh9RiHKXaFOXznTXjvgE00FgjGqyWf'
+STRIPE_SECRET_KEY = 'sk_test_51ORjCTEI8s8RsZYpM1vh2V1n851ql6gJic35hmuiOZMnMztQ3Ae2VwIQqdi3hlKu6ymI5eQMT0ZhO2UNme8tq0wL00dm1TbMcI'
